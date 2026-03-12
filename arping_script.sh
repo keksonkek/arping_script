@@ -3,6 +3,7 @@ INTERFACE="$2"
 SUBNET="$3"
 HOST="$4"
 OCTET='^(25[0-5])|(2[0-4][0-9])|(1?[0-9]?[0-9])$' # Для проверки октетов сабнета и хоста [0-255] 
+OCTETx2='^((25[0-5])|(2[0-4][0-9])|(1?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|(1?[0-9]?[0-9]))$' # Для проверки октетов подсети
 
 scan_arping() {
         local SUBNET=$1
@@ -22,6 +23,19 @@ if [[ -z "$INTERFACE" ]]; then
         echo "\$INTERFACE must be passed as second positional argument"
         exit 1
 fi
+
+# Проверяем, что префикс валидный
+if [[ ! "$PREFIX" =~ $OCTETx2 ]]; then
+        echo "\$PREFIX must be [0-255].[0-255]"
+        exit 1
+fi
+
+# Проверяем, что валидный интерфейс
+if ! ip a show $INTERFACE > /dev/null 2>&1; then
+        echo "Interface $INTERFACE does not exist"
+        exit 1
+fi
+
 # Проверяем что скрипт запущен с правами суперюзера 
 if [[ "$EUID" -ne 0 ]]; then
         echo "The script must be run as a superuser(root)"
