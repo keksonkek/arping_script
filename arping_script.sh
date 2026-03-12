@@ -1,3 +1,5 @@
+#!/bin/bash
+
 PREFIX="${1:-NOT_SET}"
 INTERFACE="$2"
 SUBNET="$3"
@@ -14,11 +16,11 @@ scan_arping() {
 
 
 
-
 # Обрабатываем SIGINT чтоб по-человечески прерывать сканирование
 trap 'echo "The scan was interrupted by the user (Ctrl+c)"; exit 1' SIGINT
 
 [[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX must be passed as first positional argument"; exit 1; }
+
 if [[ -z "$INTERFACE" ]]; then
         echo "\$INTERFACE must be passed as second positional argument"
         exit 1
